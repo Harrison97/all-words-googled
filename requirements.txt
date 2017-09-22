@@ -1,0 +1,5 @@
+lxml==4.0.0
+selenium==3.5.0
+urllib==1.22
+simplejson==3.11.1
+beautifulsoup4==4.6.0

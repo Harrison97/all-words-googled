@@ -3,9 +3,7 @@ from urllib import parse
 from bs4 import BeautifulSoup
 import urllib.request
 import json
-from threading import Timer
 import random
-# import getWord
 
 
 def getPic(search):
