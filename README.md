@@ -11,13 +11,11 @@ This is built with Node.js and Python with Selenium.
 How to use for yourself locally(only tested in windows):
     create a config.js in the main folder
 
-config.json
 
-    //config
+    //config.js
 
 
     module.exports = {
-	
 	    consumer_key:         'your key',
 	    consumer_secret:      'your secret',
 	    access_token:         'your access token',
