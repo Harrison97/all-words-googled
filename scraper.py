@@ -4,52 +4,57 @@ from bs4 import BeautifulSoup
 import urllib.request
 import json
 import random
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def getPic(search):
-    try:
-        options = webdriver.ChromeOptions()
-        options.add_argument('headless')
-        driver = webdriver.Chrome(chrome_options=options)
-        url = "https://www.google.com/search?tbm=isch&q=" + search
-        driver.get(url)
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    driver = webdriver.Chrome(chrome_options=options)
+#    url = "https://www.google.com/search?tbm=isch&q=" + search
+    url = "https://duckduckgo.com/?q=" + search + "&iax=images&ia=images"
+    driver.get(url)
 
-        element = driver.find_element_by_id('rg_s')
-        a = element.find_element_by_tag_name('a')
-        href = str(parse.unquote(a.get_attribute('href')))
 
-        piclink0 = href.find("imgurl=", 0, len(href)) + 7
-        piclink1 = href.find("&", piclink0, len(href))
-        # all fucked up when it comes to parsing different words pages
-        piclink = href[piclink0:piclink1]
-        if "?" in piclink:
-            piclink1 = piclink.find("?", 0, len(piclink))
-            piclink = piclink[0:piclink1]
-            # piclink.replace("?", "")
+    
+
+
+#    while True:
+#        try:
+#            driver.find_element_by_xpath('//*[@id="rg_s"]/div[1]/a').click()
+#            break
+#        except:
+#            print("trying to click...")
+
+    while True:
+        try:
+            piclink = driver.find_element_by_xpath('//*[@id="zci-images"]/div[1]/div[2]/div/div[1]/div[1]/span/img').get_property('src')
+            break
+        except:
+            print("trying to get href...")
+   
+    print("LINK:" + str(piclink))   
+    if "." in piclink[len(piclink) - 5:len(piclink)]:
         picextension = piclink[piclink.rfind(
             ".", 0, len(piclink)): len(piclink)]
-
-        print(piclink)
-
-        f = open('images\pic' + picextension, 'wb')
-        # f.flush()
-        # f.write(urllib.request.urlopen(piclink).read())
-        # f.close()
-    except:
-        driver.close()
-        print("ERROR in getPic() trying again")
-        getPic(search)
-
-    driver.close()
+    else:
+        picextension = ".png"
+    
+    print(piclink)
+    print(picextension)
+    driver.quit()
     return piclink
 
-
 def dlPic(piclink):
-    picextension = piclink[piclink.rfind(
-        ".", 0, len(piclink)): len(piclink)]
-    f = open('images\pic' + picextension, 'wb')
+    if "." in piclink[len(piclink) - 5:len(piclink)]:
+        picextension = piclink[piclink.rfind(
+            ".", 0, len(piclink)): len(piclink)]
+    else:
+        picextension = ".png"
+    f = open('pic' + picextension, 'wb')
     f.flush()
-    req = urllib.request.Request(piclink, headers={'User-Agent': 'Mozilla/5.0'})
+    req = urllib.request.Request(
+        piclink, headers={'User-Agent': 'Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11'})
     openurl = urllib.request.urlopen(req)
     r = openurl.read()
     f.write(r)
@@ -61,12 +66,16 @@ def getTweet(search):
     url = "http://www.dictionary.com/browse/" + search
     r = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(r, 'lxml')
+    #print(soup)
     data = soup.find_all("meta")
-    definition = str(data[len(data) - 2])
+    #print(data)
+    definition = str(data[1])
+    #print(definition)
     def0 = definition.find(",", 0, len(definition)) + 2
     def1 = definition.find(".", 0, len(definition))
     definition = definition[def0:def1]
     definition = definition.replace("(", "")
+    if definition[-1].isdigit():    definition = definition[:-1]
     print(definition)
     return search + " - " + definition
 
@@ -74,7 +83,7 @@ def getTweet(search):
 def outputJson(tweet, picextension):
     out = {
         'tweet': tweet,
-        'filename': "images\pic" + str(picextension)
+        'filename': "pic" + str(picextension)
     }
 
     # if os.path.isfile('data.json'):
@@ -113,7 +122,6 @@ def getWord():
     f.write(a)
     f.close()
 
-
     a = ""
     filein = open(wordlist)
     for line in filein:
@@ -135,13 +143,14 @@ def scrape(search):
     if len(tweet) > 140:
         tweet = tweet[0:tweet.find(";", 0, len(tweet))]
     outputJson(tweet, picextension)
-
+    print(tweet)
 
 
 searchword = getWord()
 scrape(searchword)
 # getPic("mommy")
-# getTweet("boy")
+#getTweet("daddy")
 # print("spleeping....")
 # time.sleep(3)
 print("scraper ended.")
+

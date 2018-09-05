@@ -18,23 +18,36 @@ var T = new Twit(config);
 // }
 
 // var x = 5;
-// tweetIt;
+// // tweetIt;
+// tweetIt();
 // setInterval(tweetIt, 1000*10)
 // function tweetIt() {
-// 	T.post('statuses/update', {status: 'testing..'}, tweeted);
+// 	console.log("posting.......")
+// 	T.post('statuses/update', {status: 'testing it again again..' + x}, tweeted);
 // 	function tweeted(err, data, response) {
 //   		// console.log(x)
 // 	}
-// 	// x++;
+// 	x++;
 // }
 tweetIt();
-setInterval(tweetIt, 1000*30)
+setInterval(tweetIt, 1000*1800);
+
 function tweetIt(){
 	var spawnSync = require("child_process").spawnSync;
 	var process = spawnSync('python',["scraper.py"]);
 	console.log("py scraper.py")
 	data = JSON.parse(fs.readFileSync('data.json'))
+	// while(true){
+	// 	try{
+	// 		console.log("TRYING.")
+	// 		var pic = fs.readFileSync(data.filename, { encoding: 'base64' })
+	// 		console.log("TRYING.")
+	// 	} catch {
+	// 		console.log("waiting for file...")
+	// 	}
+	// }
 	var pic = fs.readFileSync(data.filename, { encoding: 'base64' })
+	
 	var tweet = data.tweet;
 	// first we must post the media to Twitter 
 	T.post('media/upload', { media_data: pic }, function (err, data, response) {
@@ -57,9 +70,6 @@ function tweetIt(){
 	})
 	console.log("Posted.")
 }
-
-
-
 
 // https://www.google.com/search?tbm=isch&q=findSomeImage
 
