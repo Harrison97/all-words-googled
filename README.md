@@ -12,6 +12,7 @@ How to use for yourself locally(only tested in windows):
     create a config.js in the main folder
 
 config.json
+
     //config
 
 
