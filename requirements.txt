@@ -1,5 +1,6 @@
+-i https://pypi.python.org/simple/
+beautifulsoup4==4.6.0
 lxml==4.0.0
 selenium==3.5.0
-urllib3==1.22
 simplejson==3.11.1
-beautifulsoup4==4.6.0
+urllib3==1.26.5
